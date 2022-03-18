@@ -11,6 +11,7 @@
     <modules>
         <module>allegro-sdk</module>
         <module>amazon-sdk</module>
+        <module>wish-sdk</module>
     </modules>
 
     <properties>
