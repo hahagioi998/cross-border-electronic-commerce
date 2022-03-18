@@ -1,49 +1,33 @@
 package io.github;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.dto.OrdersDTO;
-import io.github.dto.ShipmentDTO;
-import io.github.vo.AllegroCheckoutForm;
-import io.github.vo.AllegroCheckoutForms;
 import io.github.vo.AllegroToken;
-import io.github.vo.ShipmentVO;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestOperations;
-import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
- * Created by EalenXie on 2022/2/21 12:59
- * 接口文档地址 : https://developer.allegro.pl/documentation
+ * Created by EalenXie on 2022/3/18 12:57
+ * https://developer.allegro.pl/documentation/#section/Authentication
  */
-public class AllegroClient {
+public abstract class AllegroClient {
 
-    private final ObjectMapper mapper;
 
     private final RestOperations restOperations;
-    /**
-     * Allegro 资源服务器的域名 https://api.allegro.pl
-     */
-    private static final String API_HOST = "https://api.allegro.pl";
     /**
      * Allegro 认证服务器的域名 https://api.allegro.pl
      */
     private static final String AUTH_HOST = "https://allegro.pl";
 
-    public AllegroClient() {
-        this(new ObjectMapper(), new RestTemplate());
+    protected AllegroClient(RestOperations restOperations) {
+        this.restOperations = restOperations;
     }
 
-    public AllegroClient(ObjectMapper objectMapper, RestOperations restOperations) {
-        this.mapper = objectMapper;
-        this.restOperations = restOperations;
+    public RestOperations getRestOperations() {
+        return restOperations;
     }
 
     /**
@@ -107,49 +91,6 @@ public class AllegroClient {
     public ResponseEntity<AllegroToken> refreshToken(String clientId, String clientSecret, String refreshToken, String redirectUri) {
         HttpHeaders headers = getBasicHeaders(clientId, clientSecret);
         return restOperations.exchange(URI.create(String.format("%s/auth/oauth/token?grant_type=refresh_token&refresh_token=%s&redirect_uri=%s", AUTH_HOST, refreshToken, redirectUri)), HttpMethod.POST, new HttpEntity<>(null, headers), AllegroToken.class);
-    }
-
-    /**
-     * 获取用户订单
-     * 接口文档  https://developer.allegro.pl/documentation/#operation/getListOfOrdersUsingGET
-     *
-     * @param dto         用户订单查询参数
-     * @param accessToken 令牌
-     * @return {@link AllegroCheckoutForms} 订单详情
-     */
-    public ResponseEntity<AllegroCheckoutForms> getListOfOrders(OrdersDTO dto, String accessToken) {
-        HttpHeaders headers = getBearerHeaders(accessToken);
-        @SuppressWarnings("unchecked") Map<String, ?> args = mapper.convertValue(dto, Map.class);
-        return restOperations.exchange(String.format("%s/order/checkout-forms", API_HOST), HttpMethod.GET, new HttpEntity<>(null, headers), AllegroCheckoutForms.class, args != null ? args : new LinkedHashMap<>());
-    }
-
-
-    /**
-     * 获取订单详情
-     * 接口文档  https://developer.allegro.pl/documentation/#operation/getOrdersDetailsUsingGET
-     *
-     * @param orderId     订单Id
-     * @param accessToken 令牌
-     * @return {@link AllegroCheckoutForm} 订单详情
-     */
-    public ResponseEntity<AllegroCheckoutForm> getOrdersDetails(String orderId, String accessToken) {
-        HttpHeaders headers = getBearerHeaders(accessToken);
-        return restOperations.exchange(URI.create(String.format("%s/order/checkout-forms/%s", API_HOST, orderId)), HttpMethod.GET, new HttpEntity<>(null, headers), AllegroCheckoutForm.class);
-    }
-
-
-    /**
-     * 订单标记发货
-     *
-     * @param orderId     订单Id
-     * @param dto         标记发货请求参数
-     * @param accessToken 请求token
-     * @return {@link ShipmentVO} 标记发货
-     */
-    public ResponseEntity<ShipmentVO> shipments(String orderId, ShipmentDTO dto, String accessToken) {
-        HttpHeaders headers = getBearerHeaders(accessToken);
-        HttpEntity<ShipmentDTO> mapHttpEntity = new HttpEntity<>(dto, headers);
-        return restOperations.exchange(String.format("%s/order/checkout-forms/%s/shipments", API_HOST, orderId), HttpMethod.POST, mapHttpEntity, ShipmentVO.class);
     }
 
 

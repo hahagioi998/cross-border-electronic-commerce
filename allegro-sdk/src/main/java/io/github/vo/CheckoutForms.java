@@ -11,10 +11,10 @@ import java.util.List;
  */
 @NoArgsConstructor
 @Data
-public class AllegroCheckoutForms {
+public class CheckoutForms {
 
     @JsonProperty("checkoutForms")
-    private List<AllegroCheckoutForm> checkoutForms;
+    private List<CheckoutForm> checkoutFormList;
     @JsonProperty("count")
     private Integer count;
     @JsonProperty("totalCount")

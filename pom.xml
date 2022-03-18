@@ -10,6 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>allegro-sdk</module>
+        <module>amazon-sdk</module>
     </modules>
 
     <properties>

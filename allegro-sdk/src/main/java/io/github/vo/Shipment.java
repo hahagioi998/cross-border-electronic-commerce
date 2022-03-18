@@ -11,8 +11,7 @@ import java.util.List;
  */
 @NoArgsConstructor
 @Data
-public class ShipmentVO {
-
+public class Shipment {
 
     @JsonProperty("id")
     private String id;

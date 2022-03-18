@@ -11,7 +11,7 @@ import java.util.List;
  */
 @NoArgsConstructor
 @Data
-public class AllegroCheckoutForm {
+public class CheckoutForm {
 
     @JsonProperty("id")
     private String id;
