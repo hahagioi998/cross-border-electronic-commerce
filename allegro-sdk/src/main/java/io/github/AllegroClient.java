@@ -20,7 +20,33 @@ public abstract class AllegroClient {
     /**
      * Allegro 认证服务器的域名 https://api.allegro.pl
      */
-    private static final String AUTH_HOST = "https://allegro.pl";
+    public static final String AUTH_HOST = "https://allegro.pl";
+    /**
+     * Allegro 认证服务器的域名(沙箱环境) https://allegro.pl.allegrosandbox.pl
+     */
+    public static final String AUTH_SANDBOX_HOST = "https://allegro.pl.allegrosandbox.pl";
+    /**
+     * Allegro 资源服务器的域名 https://api.allegro.pl
+     */
+    public static final String API_HOST = "https://api.allegro.pl";
+
+    /**
+     * Allegro 资源服务器的域名(沙箱环境) https://api.allegro.pl.allegrosandbox.pl
+     */
+    public static final String API_SANDBOX_HOST = "https://api.allegro.pl.allegrosandbox.pl";
+
+    /**
+     * 是否沙箱环境
+     */
+    private boolean sandBox = false;
+
+    public boolean isSandBox() {
+        return sandBox;
+    }
+
+    public void setSandBox(boolean sandBox) {
+        this.sandBox = sandBox;
+    }
 
     protected AllegroClient(RestOperations restOperations) {
         this.restOperations = restOperations;
@@ -64,7 +90,7 @@ public abstract class AllegroClient {
      * @return 获取授权地址, 用户在此生成的地址上进行授权, 获取到code
      */
     public String authorize(String clientId, String redirectUri) {
-        return String.format("%s/auth/oauth/authorize?response_type=code&client_id=%s&redirect_uri=%s", AUTH_HOST, clientId, redirectUri);
+        return String.format("%s/auth/oauth/authorize?response_type=code&client_id=%s&redirect_uri=%s", isSandBox() ? AUTH_SANDBOX_HOST : AUTH_HOST, clientId, redirectUri);
     }
 
     /**
@@ -77,7 +103,7 @@ public abstract class AllegroClient {
      */
     public ResponseEntity<AllegroToken> accessToken(String clientId, String clientSecret, String code, String redirectUri) {
         HttpHeaders headers = getBasicHeaders(clientId, clientSecret);
-        return restOperations.exchange(URI.create(String.format("%s/auth/oauth/token?grant_type=authorization_code&code=%s&redirect_uri=%s", AUTH_HOST, code, redirectUri)), HttpMethod.POST, new HttpEntity<>(null, headers), AllegroToken.class);
+        return restOperations.exchange(URI.create(String.format("%s/auth/oauth/token?grant_type=authorization_code&code=%s&redirect_uri=%s", isSandBox() ? AUTH_SANDBOX_HOST : AUTH_HOST, code, redirectUri)), HttpMethod.POST, new HttpEntity<>(null, headers), AllegroToken.class);
     }
 
     /**
@@ -90,7 +116,7 @@ public abstract class AllegroClient {
      */
     public ResponseEntity<AllegroToken> refreshToken(String clientId, String clientSecret, String refreshToken, String redirectUri) {
         HttpHeaders headers = getBasicHeaders(clientId, clientSecret);
-        return restOperations.exchange(URI.create(String.format("%s/auth/oauth/token?grant_type=refresh_token&refresh_token=%s&redirect_uri=%s", AUTH_HOST, refreshToken, redirectUri)), HttpMethod.POST, new HttpEntity<>(null, headers), AllegroToken.class);
+        return restOperations.exchange(URI.create(String.format("%s/auth/oauth/token?grant_type=refresh_token&refresh_token=%s&redirect_uri=%s", isSandBox() ? AUTH_SANDBOX_HOST : AUTH_HOST, refreshToken, redirectUri)), HttpMethod.POST, new HttpEntity<>(null, headers), AllegroToken.class);
     }
 
 

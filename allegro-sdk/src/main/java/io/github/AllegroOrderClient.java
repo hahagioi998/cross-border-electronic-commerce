@@ -24,10 +24,6 @@ public class AllegroOrderClient extends AllegroClient {
 
     private final ObjectMapper mapper;
 
-    /**
-     * Allegro 资源服务器的域名 https://api.allegro.pl
-     */
-    private static final String API_HOST = "https://api.allegro.pl";
 
     public AllegroOrderClient() {
         this(new RestTemplate());
@@ -53,7 +49,7 @@ public class AllegroOrderClient extends AllegroClient {
     public ResponseEntity<CheckoutForms> userOrders(OrdersDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
         @SuppressWarnings("unchecked") Map<String, ?> args = mapper.convertValue(dto, Map.class);
-        return getRestOperations().exchange(String.format("%s/order/checkout-forms", API_HOST), HttpMethod.GET, new HttpEntity<>(null, headers), CheckoutForms.class, args != null ? args : new LinkedHashMap<>());
+        return getRestOperations().exchange(String.format("%s/order/checkout-forms", isSandBox() ? API_SANDBOX_HOST : API_HOST), HttpMethod.GET, new HttpEntity<>(null, headers), CheckoutForms.class, args != null ? args : new LinkedHashMap<>());
     }
 
 
@@ -67,7 +63,7 @@ public class AllegroOrderClient extends AllegroClient {
      */
     public ResponseEntity<CheckoutForm> ordersDetails(String orderId, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        return getRestOperations().exchange(URI.create(String.format("%s/order/checkout-forms/%s", API_HOST, orderId)), HttpMethod.GET, new HttpEntity<>(null, headers), CheckoutForm.class);
+        return getRestOperations().exchange(URI.create(String.format("%s/order/checkout-forms/%s", isSandBox() ? API_SANDBOX_HOST : API_HOST, orderId)), HttpMethod.GET, new HttpEntity<>(null, headers), CheckoutForm.class);
     }
 
     /**
@@ -82,7 +78,7 @@ public class AllegroOrderClient extends AllegroClient {
     public ResponseEntity<Shipment> shipments(String orderId, ShipmentDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
         HttpEntity<ShipmentDTO> mapHttpEntity = new HttpEntity<>(dto, headers);
-        return getRestOperations().exchange(String.format("%s/order/checkout-forms/%s/shipments", API_HOST, orderId), HttpMethod.POST, mapHttpEntity, Shipment.class);
+        return getRestOperations().exchange(String.format("%s/order/checkout-forms/%s/shipments", isSandBox() ? API_SANDBOX_HOST : API_HOST, orderId), HttpMethod.POST, mapHttpEntity, Shipment.class);
     }
 
     /**
@@ -95,7 +91,7 @@ public class AllegroOrderClient extends AllegroClient {
      */
     public ResponseEntity<Shipment> shipments(String orderId, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        return getRestOperations().exchange(String.format("%s/order/checkout-forms/%s/shipments", API_HOST, orderId), HttpMethod.GET, new HttpEntity<>(null, headers), Shipment.class);
+        return getRestOperations().exchange(String.format("%s/order/checkout-forms/%s/shipments", isSandBox() ? API_SANDBOX_HOST : API_HOST, orderId), HttpMethod.GET, new HttpEntity<>(null, headers), Shipment.class);
     }
 
 
@@ -109,7 +105,7 @@ public class AllegroOrderClient extends AllegroClient {
     public ResponseEntity<OrderEvent> events(OrderEventDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
         @SuppressWarnings("unchecked") Map<String, ?> args = mapper.convertValue(dto, Map.class);
-        return getRestOperations().exchange(String.format("%s/order/events", API_HOST), HttpMethod.GET, new HttpEntity<>(null, headers), OrderEvent.class, args != null ? args : new LinkedHashMap<>());
+        return getRestOperations().exchange(String.format("%s/order/events", isSandBox() ? API_SANDBOX_HOST : API_HOST), HttpMethod.GET, new HttpEntity<>(null, headers), OrderEvent.class, args != null ? args : new LinkedHashMap<>());
     }
 
     /**
@@ -120,7 +116,7 @@ public class AllegroOrderClient extends AllegroClient {
      */
     public ResponseEntity<EventStats> eventStats(String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        return getRestOperations().exchange(String.format("%s/order/event-stats", API_HOST), HttpMethod.GET, new HttpEntity<>(null, headers), EventStats.class);
+        return getRestOperations().exchange(String.format("%s/order/event-stats", isSandBox() ? API_SANDBOX_HOST : API_HOST), HttpMethod.GET, new HttpEntity<>(null, headers), EventStats.class);
     }
 
 
@@ -132,7 +128,7 @@ public class AllegroOrderClient extends AllegroClient {
      */
     public ResponseEntity<OrderCarriers> orderCarriers(String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        return getRestOperations().exchange(String.format("%s/order/carriers", API_HOST), HttpMethod.GET, new HttpEntity<>(null, headers), OrderCarriers.class);
+        return getRestOperations().exchange(String.format("%s/order/carriers", isSandBox() ? API_SANDBOX_HOST : API_HOST), HttpMethod.GET, new HttpEntity<>(null, headers), OrderCarriers.class);
     }
 
 
@@ -145,7 +141,7 @@ public class AllegroOrderClient extends AllegroClient {
      * @param accessToken 请求token
      */
     public ResponseEntity<Void> fulfillment(String orderId, FulfillmentDTO dto, String accessToken) {
-        getRestOperations().put(String.format("%s/order/checkout-forms/%s/fulfillment", API_HOST, orderId), new HttpEntity<>(dto, getBearerHeaders(accessToken)));
+        getRestOperations().put(String.format("%s/order/checkout-forms/%s/fulfillment", isSandBox() ? API_SANDBOX_HOST : API_HOST, orderId), new HttpEntity<>(dto, getBearerHeaders(accessToken)));
         return ResponseEntity.ok().build();
     }
 
@@ -159,7 +155,7 @@ public class AllegroOrderClient extends AllegroClient {
      */
     public ResponseEntity<Invoices> invoices(String orderId, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        return getRestOperations().exchange(String.format("%s/order/checkout-forms/%s/invoices", API_HOST, orderId), HttpMethod.GET, new HttpEntity<>(null, headers), Invoices.class);
+        return getRestOperations().exchange(String.format("%s/order/checkout-forms/%s/invoices", isSandBox() ? API_SANDBOX_HOST : API_HOST, orderId), HttpMethod.GET, new HttpEntity<>(null, headers), Invoices.class);
     }
 
 
@@ -174,7 +170,7 @@ public class AllegroOrderClient extends AllegroClient {
      */
     public ResponseEntity<IdVO> invoices(String orderId, InvoicesDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        return getRestOperations().exchange(String.format("%s/order/checkout-forms/%s/invoices", API_HOST, orderId), HttpMethod.POST, new HttpEntity<>(dto, headers), IdVO.class);
+        return getRestOperations().exchange(String.format("%s/order/checkout-forms/%s/invoices", isSandBox() ? API_SANDBOX_HOST : API_HOST, orderId), HttpMethod.POST, new HttpEntity<>(dto, headers), IdVO.class);
     }
 
 
