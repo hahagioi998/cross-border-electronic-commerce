@@ -12,6 +12,7 @@
         <module>allegro-sdk</module>
         <module>amazon-sdk</module>
         <module>wish-sdk</module>
+        <module>walmart-sdk</module>
     </modules>
 
     <properties>
