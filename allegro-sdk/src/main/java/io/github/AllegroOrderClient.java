@@ -24,7 +24,6 @@ public class AllegroOrderClient extends AllegroClient {
 
     private final ObjectMapper mapper;
 
-
     public AllegroOrderClient() {
         this(new RestTemplate());
     }

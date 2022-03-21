@@ -12,6 +12,7 @@ import java.net.URI;
 /**
  * Created by EalenXie on 2022/3/18 12:57
  * https://developer.allegro.pl/documentation/#section/Authentication
+ *
  */
 public abstract class AllegroClient {
 
@@ -23,13 +24,13 @@ public abstract class AllegroClient {
     public static final String AUTH_HOST = "https://allegro.pl";
     /**
      * Allegro 认证服务器的域名(沙箱环境) https://allegro.pl.allegrosandbox.pl
+     * https://developer.allegro.pl/about/#%c5%9brodowisko-testowe
      */
     public static final String AUTH_SANDBOX_HOST = "https://allegro.pl.allegrosandbox.pl";
     /**
      * Allegro 资源服务器的域名 https://api.allegro.pl
      */
     public static final String API_HOST = "https://api.allegro.pl";
-
     /**
      * Allegro 资源服务器的域名(沙箱环境) https://api.allegro.pl.allegrosandbox.pl
      */
