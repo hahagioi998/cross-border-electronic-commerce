@@ -1,6 +1,7 @@
 package io.github.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.vo.checkoutform.CheckoutForm;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
- * Created by EalenXie on 2022/3/24 15:15
+ * Created by EalenXie on 2022/3/24 15:12
  */
 @NoArgsConstructor
 @Data
-public class WalmartOrders {
-
-
-    @JsonProperty("list")
-    private OrderList list;
+public class OrderLines {
+    @JsonProperty("orderLine")
+    private List<OrderLine> orderLine;
 }

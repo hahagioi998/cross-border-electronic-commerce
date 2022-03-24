@@ -5,7 +5,8 @@ import io.github.marketplace.dto.CancelDTO;
 import io.github.marketplace.dto.OrdersDTO;
 import io.github.marketplace.dto.RefundDTO;
 import io.github.marketplace.dto.ShipmentDTO;
-import io.github.marketplace.vo.*;
+import io.github.marketplace.vo.WalmartOrder;
+import io.github.marketplace.vo.WalmartOrders;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -60,46 +61,46 @@ public class WalmartOrderClient extends WalmartClient {
     /**
      * https://developer.walmart.com/api/us/mp/orders#operation/getAllReleasedOrders
      */
-    public ResponseEntity<WalmartReleasedOrders> releasedOrders(String accessToken) {
+    public ResponseEntity<WalmartOrders> releasedOrders(String accessToken) {
         HttpHeaders headers = getCommonHeaders();
         headers.set(WM_SEC_ACCESS_TOKEN, accessToken);
-        return getRestOperations().exchange(URI.create(String.format("%s/v3/orders/released", isSandBoxMode() ? SANDBOX_HOST : HOST)), HttpMethod.GET, new HttpEntity<>(null, headers), WalmartReleasedOrders.class);
+        return getRestOperations().exchange(URI.create(String.format("%s/v3/orders/released", isSandBoxMode() ? SANDBOX_HOST : HOST)), HttpMethod.GET, new HttpEntity<>(null, headers), WalmartOrders.class);
     }
 
     /**
      * https://developer.walmart.com/api/us/mp/orders#operation/refundOrderLines
      */
-    public ResponseEntity<WalmartRefund> refund(String purchaseOrderId, String accessToken, RefundDTO dto) {
+    public ResponseEntity<WalmartOrder> refund(String purchaseOrderId, String accessToken, RefundDTO dto) {
         HttpHeaders headers = getCommonHeaders();
         headers.set(WM_SEC_ACCESS_TOKEN, accessToken);
-        return getRestOperations().exchange(String.format("%s/v3/orders/%s/refund", isSandBoxMode() ? SANDBOX_HOST : HOST, purchaseOrderId), HttpMethod.POST, new HttpEntity<>(dto, headers), WalmartRefund.class);
+        return getRestOperations().exchange(String.format("%s/v3/orders/%s/refund", isSandBoxMode() ? SANDBOX_HOST : HOST, purchaseOrderId), HttpMethod.POST, new HttpEntity<>(dto, headers), WalmartOrder.class);
     }
 
     /**
      * https://developer.walmart.com/api/us/mp/orders#operation/shippingUpdates
      */
-    public ResponseEntity<WalmartRefund> shipment(String purchaseOrderId, String accessToken, ShipmentDTO dto) {
+    public ResponseEntity<WalmartOrder> shipment(String purchaseOrderId, String accessToken, ShipmentDTO dto) {
         HttpHeaders headers = getCommonHeaders();
         headers.set(WM_SEC_ACCESS_TOKEN, accessToken);
-        return getRestOperations().exchange(String.format("%s/v3/orders/%s/shipping", isSandBoxMode() ? SANDBOX_HOST : HOST, purchaseOrderId), HttpMethod.POST, new HttpEntity<>(dto, headers), WalmartRefund.class);
+        return getRestOperations().exchange(String.format("%s/v3/orders/%s/shipping", isSandBoxMode() ? SANDBOX_HOST : HOST, purchaseOrderId), HttpMethod.POST, new HttpEntity<>(dto, headers), WalmartOrder.class);
     }
 
     /**
      * https://developer.walmart.com/api/us/mp/orders#operation/acknowledgeOrders
      */
-    public ResponseEntity<WalmartAcknowledge> acknowledge(String purchaseOrderId, String accessToken) {
+    public ResponseEntity<WalmartOrder> acknowledge(String purchaseOrderId, String accessToken) {
         HttpHeaders headers = getCommonHeaders();
         headers.set(WM_SEC_ACCESS_TOKEN, accessToken);
-        return getRestOperations().exchange(String.format("%s/v3/orders/%s/acknowledge", isSandBoxMode() ? SANDBOX_HOST : HOST, purchaseOrderId), HttpMethod.POST, new HttpEntity<>(null, headers), WalmartAcknowledge.class);
+        return getRestOperations().exchange(String.format("%s/v3/orders/%s/acknowledge", isSandBoxMode() ? SANDBOX_HOST : HOST, purchaseOrderId), HttpMethod.POST, new HttpEntity<>(null, headers), WalmartOrder.class);
     }
 
     /**
      * https://developer.walmart.com/api/us/mp/orders#operation/cancelOrderLines
      */
-    public ResponseEntity<WalmartCancel> cancel(String purchaseOrderId, String accessToken, CancelDTO dto) {
+    public ResponseEntity<WalmartOrder> cancel(String purchaseOrderId, String accessToken, CancelDTO dto) {
         HttpHeaders headers = getCommonHeaders();
         headers.set(WM_SEC_ACCESS_TOKEN, accessToken);
-        return getRestOperations().exchange(String.format("%s/v3/orders/%s/cancel", isSandBoxMode() ? SANDBOX_HOST : HOST, purchaseOrderId), HttpMethod.POST, new HttpEntity<>(dto, headers), WalmartCancel.class);
+        return getRestOperations().exchange(String.format("%s/v3/orders/%s/cancel", isSandBoxMode() ? SANDBOX_HOST : HOST, purchaseOrderId), HttpMethod.POST, new HttpEntity<>(dto, headers), WalmartOrder.class);
     }
 
 }
