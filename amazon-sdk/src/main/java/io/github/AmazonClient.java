@@ -1,30 +1,29 @@
 package io.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.github.dto.OrdersDTO;
 import io.github.dto.ShipmentDTO;
 import io.github.vo.AmazonResponse;
 import io.github.vo.AmazonToken;
 import io.github.vo.order.AmazonBuyerInfo;
+import io.github.vo.order.AmazonOrder;
 import io.github.vo.order.AmazonOrderItems;
 import io.github.vo.order.AmazonShippingAddress;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestOperations;
-
-import io.github.vo.order.AmazonOrder;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * Created by EalenXie on 2022/2/22 10:13
  * 亚马逊订单api https://developer-docs.amazon.com/sp-api/docs/orders-api-v0-reference
  */
-public class AmazonClient   {
+public class AmazonClient {
 
     private final ObjectMapper mapper;
 
@@ -128,9 +127,14 @@ public class AmazonClient   {
      * https://developer-docs.amazon.com/sp-api/docs/orders-api-v0-reference#get-ordersv0orders
      */
     public ResponseEntity<AmazonResponse<AmazonOrder>> getOrders(OrdersDTO dto) {
-        @SuppressWarnings("unchecked") Map<String, ?> args = mapper.convertValue(dto, Map.class);
-        return restOperations.exchange(String.format("%s/orders/v0/orders", SELLING_PARTNER_HOST), HttpMethod.GET, new HttpEntity<>(null, new HttpHeaders()), new ParameterizedTypeReference<AmazonResponse<AmazonOrder>>() {
-        }, args != null ? args : new LinkedHashMap<>());
+        @SuppressWarnings("unchecked") Map<String, String> args = mapper.convertValue(dto, Map.class);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/orders/v0/orders", SELLING_PARTNER_HOST));
+        LinkedMultiValueMap<String, String> req = new LinkedMultiValueMap<>();
+        req.setAll(args);
+        builder.queryParams(req);
+        URI uri = builder.build().encode().toUri();
+        return restOperations.exchange(uri, HttpMethod.GET, new HttpEntity<>(null, new HttpHeaders()), new ParameterizedTypeReference<AmazonResponse<AmazonOrder>>() {
+        });
     }
 
     /**

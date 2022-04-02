@@ -82,7 +82,6 @@ public abstract class AllegroClient {
         return basicHeader;
     }
 
-
     /**
      * 获取授权地址   文档: https://developer.allegro.pl/auth/#autoryzacja-u%c5%bcytkownika
      *

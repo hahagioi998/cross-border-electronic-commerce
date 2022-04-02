@@ -11,8 +11,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.LinkedHashMap;
@@ -45,8 +47,13 @@ public class WalmartOrderClient extends WalmartClient {
     public ResponseEntity<WalmartOrders> orders(String accessToken, OrdersDTO dto) {
         HttpHeaders headers = getCommonHeaders();
         headers.set(WM_SEC_ACCESS_TOKEN, accessToken);
-        @SuppressWarnings("unchecked") Map<String, ?> args = mapper.convertValue(dto, Map.class);
-        return getRestOperations().exchange(String.format("%s/v3/orders", isSandBoxMode() ? SANDBOX_HOST : HOST), HttpMethod.GET, new HttpEntity<>(null, headers), WalmartOrders.class, args != null ? args : new LinkedHashMap<>());
+        @SuppressWarnings("unchecked") Map<String, String> args = mapper.convertValue(dto, Map.class);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/v3/orders", isSandBoxMode() ? SANDBOX_HOST : HOST));
+        LinkedMultiValueMap<String, String> req = new LinkedMultiValueMap<>();
+        req.setAll(args);
+        builder.queryParams(req);
+        URI uri = builder.build().encode().toUri();
+        return getRestOperations().exchange(uri, HttpMethod.GET, new HttpEntity<>(null, headers), WalmartOrders.class);
     }
 
     /**

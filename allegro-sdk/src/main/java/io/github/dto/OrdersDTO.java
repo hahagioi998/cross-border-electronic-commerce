@@ -12,10 +12,10 @@ import lombok.Setter;
 @Setter
 public class OrdersDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer offset;
+    private String offset;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer limit;
+    private String limit;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String status;

@@ -10,11 +10,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -49,8 +50,13 @@ public class AllegroOrderClient extends AllegroClient {
      */
     public ResponseEntity<CheckoutForms> userOrders(OrdersDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        @SuppressWarnings("unchecked") Map<String, ?> args = mapper.convertValue(dto, Map.class);
-        return getRestOperations().exchange(String.format("%s/order/checkout-forms", isSandBox() ? API_SANDBOX_HOST : API_HOST), HttpMethod.GET, new HttpEntity<>(null, headers), CheckoutForms.class, args != null ? args : new LinkedHashMap<>());
+        @SuppressWarnings("unchecked") Map<String, String> args = mapper.convertValue(dto, Map.class);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/order/checkout-forms", isSandBox() ? API_SANDBOX_HOST : API_HOST));
+        LinkedMultiValueMap<String, String> req = new LinkedMultiValueMap<>();
+        req.setAll(args);
+        builder.queryParams(req);
+        URI uri = builder.build().encode().toUri();
+        return getRestOperations().exchange(uri, HttpMethod.GET, new HttpEntity<>(null, headers), CheckoutForms.class);
     }
 
 
@@ -105,8 +111,12 @@ public class AllegroOrderClient extends AllegroClient {
      */
     public ResponseEntity<OrderEvent> events(OrderEventDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        @SuppressWarnings("unchecked") Map<String, ?> args = mapper.convertValue(dto, Map.class);
-        return getRestOperations().exchange(String.format("%s/order/events", isSandBox() ? API_SANDBOX_HOST : API_HOST), HttpMethod.GET, new HttpEntity<>(null, headers), OrderEvent.class, args != null ? args : new LinkedHashMap<>());
+        @SuppressWarnings("unchecked") Map<String, String> args = mapper.convertValue(dto, Map.class);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/order/events", isSandBox() ? API_SANDBOX_HOST : API_HOST));
+        LinkedMultiValueMap<String, String> req = new LinkedMultiValueMap<>();
+        req.setAll(args);
+        builder.queryParams(req);
+        return getRestOperations().exchange(builder.build().encode().toUri(), HttpMethod.GET, new HttpEntity<>(null, headers), OrderEvent.class);
     }
 
     /**

@@ -2,14 +2,17 @@ package io.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.dto.*;
-import io.github.vo.*;
+import io.github.vo.NameVO;
+import io.github.vo.WishDownloadJob;
+import io.github.vo.WishOrder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,9 +60,17 @@ public class WishOrderClient extends WishClient {
      */
     public ResponseEntity<List<WishOrder>> getOrders(OrdersDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        @SuppressWarnings("unchecked") Map<String, ?> args = mapper.convertValue(dto, Map.class);
-        return getRestOperations().exchange(String.format("%s/api/v3/orders", isSandbox() ? SANDBOX_HOST : HOST), HttpMethod.GET, new HttpEntity<>(null, headers), new ParameterizedTypeReference<List<WishOrder>>() {
-        }, args != null ? args : new LinkedHashMap<>());
+        LinkedMultiValueMap<String, String> req = queryParam(dto);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/api/v3/orders", isSandbox() ? SANDBOX_HOST : HOST)).queryParams(req);
+        return getRestOperations().exchange(builder.build().encode().toUri(), HttpMethod.GET, new HttpEntity<>(null, headers), new ParameterizedTypeReference<List<WishOrder>>() {
+        });
+    }
+
+    public LinkedMultiValueMap<String, String> queryParam(Object dto) {
+        @SuppressWarnings("unchecked") Map<String, String> args = mapper.convertValue(dto, Map.class);
+        LinkedMultiValueMap<String, String> req = new LinkedMultiValueMap<>();
+        req.setAll(args);
+        return req;
     }
 
 
@@ -73,9 +84,10 @@ public class WishOrderClient extends WishClient {
      */
     public ResponseEntity<List<NameVO>> shippingCarriers(ShippingCarriersDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        @SuppressWarnings("unchecked") Map<String, ?> args = mapper.convertValue(dto, Map.class);
-        return getRestOperations().exchange(String.format("%s/api/v3/shipping_carriers", isSandbox() ? SANDBOX_HOST : HOST), HttpMethod.GET, new HttpEntity<>(null, headers), new ParameterizedTypeReference<List<NameVO>>() {
-        }, args != null ? args : new LinkedHashMap<>());
+        LinkedMultiValueMap<String, String> req = queryParam(dto);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/api/v3/shipping_carriers", isSandbox() ? SANDBOX_HOST : HOST)).queryParams(req);
+        return getRestOperations().exchange(builder.build().encode().toUri(), HttpMethod.GET, new HttpEntity<>(null, headers), new ParameterizedTypeReference<List<NameVO>>() {
+        });
     }
 
 
@@ -89,8 +101,9 @@ public class WishOrderClient extends WishClient {
      */
     public ResponseEntity<WishDownloadJob> batchDownloadOrders(OrdersDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        @SuppressWarnings("unchecked") Map<String, ?> args = mapper.convertValue(dto, Map.class);
-        return getRestOperations().exchange(String.format("%s/api/v3/bulk_get", isSandbox() ? SANDBOX_HOST : HOST), HttpMethod.POST, new HttpEntity<>(null, headers), WishDownloadJob.class, args != null ? args : new LinkedHashMap<>());
+        LinkedMultiValueMap<String, String> req = queryParam(dto);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/api/v3/bulk_get", isSandbox() ? SANDBOX_HOST : HOST)).queryParams(req);
+        return getRestOperations().exchange(builder.build().encode().toUri(), HttpMethod.POST, new HttpEntity<>(null, headers), WishDownloadJob.class);
     }
 
 
