@@ -13,6 +13,7 @@
         <module>amazon-sdk</module>
         <module>wish-sdk</module>
         <module>walmart-sdk</module>
+        <module>paypal-sdk</module>
     </modules>
 
     <properties>
